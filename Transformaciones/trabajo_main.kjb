@@ -11,6 +11,53 @@
   <modified_date>2020/05/28 19:38:33.444</modified_date>
   <parameters>
     </parameters>
+  <connection>
+    <name>Conexion base datos</name>
+    <server>localhost</server>
+    <type>SQLITE</type>
+    <access>Native</access>
+    <database>..\data.db</database>
+    <port/>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
   <slaveservers>
     </slaveservers>
   <job-log-table>
@@ -286,8 +333,158 @@
   <pass_batchid>N</pass_batchid>
   <shared_objects_file/>
   <entries>
+    <entry>
+      <name>Crear tabla</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>
+CREATE TABLE Quarter_Time(
+  "id" int NOT NULL AUTOINCREMENT,
+  "year" int NOT NULL,
+  "quarter" int NOT NULL,
+  "month" int NOT NULL,
+  "day" int NOT NULL,
+  PRIMARY KEY("id")
+);
+
+CREATE TABLE Week_Time(
+  "id" int NOT NULL,
+  "year" int NOT NULL,
+  "week" int NOT NULL,
+  "day_week" int NOT NULL,
+  PRIMARY KEY("id")
+);
+
+CREATE TABLE Time(
+  "id" int NOT NULL,
+  "fk_qt" int,
+  "fk_wt" int,
+  PRIMARY KEY("id"),
+  FOREIGN KEY ("fk_qt") REFERENCES Quarter_Time("id"),
+  FOREIGN KEY ("fk_wt") REFERENCES Week_Time("id")
+);
+
+CREATE TABLE Region(
+  "id" int NOT NULL,
+  "region" int,
+  "subregion" int,
+  "country" int,
+  "country_code" varchar(255),
+  PRIMARY KEY("id")
+);
+
+
+CREATE TABLE Cases(
+  "id" int NOT NULL,
+  "cases" int,
+  "deaths" int,
+  "cases100k" real,
+  "deaths100k" real,
+  "fk_time" int,
+  "fk_region" int,
+  PRIMARY KEY("id"),
+  FOREIGN KEY ("fk_time") REFERENCES Time("id"),
+  FOREIGN KEY ("fk_region") REFERENCES Region("id")
+);
+</sql>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>D:\alberto\Clase\SI2\tc3\create_table.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>Conexion base datos</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>400</xloc>
+      <yloc>192</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Start</name>
+      <description/>
+      <type>SPECIAL</type>
+      <attributes/>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>60</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>160</xloc>
+      <yloc>192</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Check DB connections</name>
+      <description/>
+      <type>CHECK_DB_CONNECTIONS</type>
+      <attributes/>
+      <connections>
+        <connection>
+          <name>Conexion base datos</name>
+          <waitfor>0</waitfor>
+          <waittime>millisecond</waittime>
+        </connection>
+      </connections>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>272</xloc>
+      <yloc>192</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Error en conexion BD</name>
+      <description/>
+      <type>WRITE_TO_LOG</type>
+      <attributes/>
+      <logmessage>Error:conexion BD</logmessage>
+      <loglevel>Basic</loglevel>
+      <logsubject>Error en conexion BD</logsubject>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>272</xloc>
+      <yloc>320</yloc>
+      <attributes_kjc/>
+    </entry>
   </entries>
   <hops>
+    <hop>
+      <from>Start</from>
+      <to>Check DB connections</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Check DB connections</from>
+      <to>Error en conexion BD</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Check DB connections</from>
+      <to>Crear tabla</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
   </hops>
   <notepads>
   </notepads>
