@@ -1,3 +1,8 @@
+DELETE FROM Quarter_Time;
+DELETE FROM Week_Time;
+DELETE FROM Time;
+DELETE FROM Region;
+DELETE FROM Cases;
 
 DROP TABLE IF EXISTS Quarter_Time;
 DROP TABLE IF EXISTS Week_Time;
@@ -6,40 +11,39 @@ DROP TABLE IF EXISTS Region;
 DROP TABLE IF EXISTS Cases;
 
 CREATE TABLE Quarter_Time(
-  "id" int NOT NULL,
+  "date" TEXT NOT NULL,
   "year" int NOT NULL,
   "quarter" int NOT NULL,
   "month" int NOT NULL,
   "day" int NOT NULL,
-  PRIMARY KEY("id")
+  PRIMARY KEY("date")
 );
 
 CREATE TABLE Week_Time(
-  "id" int NOT NULL,
+  "date" TEXT NOT NULL,
   "year" int NOT NULL,
   "week" int NOT NULL,
   "day_week" int NOT NULL,
-  PRIMARY KEY("id")
+  PRIMARY KEY("date")
 );
 
 CREATE TABLE Time(
-  "id" int NOT NULL,
-  "fk_qt" int,
-  "fk_wt" int,
-  PRIMARY KEY("id"),
-  FOREIGN KEY ("fk_qt") REFERENCES Quarter_Time("id"),
-  FOREIGN KEY ("fk_wt") REFERENCES Week_Time("id")
+  "date" DATE NOT NULL,
+  "workday" BOOLEAN,
+  "fk_qt" DATE,
+  "fk_wt" DATE,
+  PRIMARY KEY("date"),
+  FOREIGN KEY ("fk_qt") REFERENCES Quarter_Time("date"),
+  FOREIGN KEY ("fk_wt") REFERENCES Week_Time("date")
 );
 
 CREATE TABLE Region(
-  "id" int NOT NULL,
+  "country_code" varchar(255) NOT NULL,
   "region" int,
   "subregion" int,
   "country" int,
-  "country_code" varchar(255),
-  PRIMARY KEY("id")
+  PRIMARY KEY("country_code")
 );
-
 
 CREATE TABLE Cases(
   "id" int NOT NULL,
@@ -47,9 +51,9 @@ CREATE TABLE Cases(
   "deaths" int,
   "cases100k" real,
   "deaths100k" real,
-  "fk_time" int,
-  "fk_region" int,
+  "fk_time" DATE,
+  "fk_region" varchar(255),
   PRIMARY KEY("id"),
-  FOREIGN KEY ("fk_time") REFERENCES Time("id"),
-  FOREIGN KEY ("fk_region") REFERENCES Region("id")
+  FOREIGN KEY ("fk_time") REFERENCES Time("date"),
+  FOREIGN KEY ("fk_region") REFERENCES Region("country_code")
 );

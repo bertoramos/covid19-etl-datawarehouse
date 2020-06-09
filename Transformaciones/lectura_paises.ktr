@@ -435,10 +435,62 @@
   </info>
   <notepads>
   </notepads>
+  <connection>
+    <name>Base de datos</name>
+    <server>localhost</server>
+    <type>SQLITE</type>
+    <access>Native</access>
+    <database>D:\alberto\Clase\SI2\tc3\datawarehouse.db</database>
+    <port/>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
   <order>
     <hop>
       <from>lectura_regiones</from>
       <to>Elimina regiones nulas</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Elimina regiones nulas</from>
+      <to>Llena regiones</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -497,6 +549,66 @@
     </remotesteps>
     <GUI>
       <xloc>400</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Llena regiones</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Base de datos</connection>
+    <schema/>
+    <table>Region</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+      <field>
+        <column_name>region</column_name>
+        <stream_name>region-code</stream_name>
+      </field>
+      <field>
+        <column_name>subregion</column_name>
+        <stream_name>sub-region-code</stream_name>
+      </field>
+      <field>
+        <column_name>country</column_name>
+        <stream_name>country-code</stream_name>
+      </field>
+      <field>
+        <column_name>country_code</column_name>
+        <stream_name>alpha-3</stream_name>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>528</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
@@ -658,7 +770,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>240</xloc>
+      <xloc>256</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
