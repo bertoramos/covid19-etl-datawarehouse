@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS Region;
 DROP TABLE IF EXISTS Cases;
 
 CREATE TABLE Quarter_Time(
-  "date" TEXT NOT NULL,
+  "date" DATE NOT NULL,
   "year" int NOT NULL,
   "quarter" int NOT NULL,
   "month" int NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE Quarter_Time(
 );
 
 CREATE TABLE Week_Time(
-  "date" TEXT NOT NULL,
+  "date" DATE NOT NULL,
   "year" int NOT NULL,
   "week" int NOT NULL,
   "day_week" int NOT NULL,
@@ -38,10 +38,11 @@ CREATE TABLE Time(
 );
 
 CREATE TABLE Region(
-  "country_code" varchar(255) NOT NULL,
+  "country_code" varchar(3) NOT NULL,
   "region" int,
   "subregion" int,
   "country" int,
+  "country_name" varchar(100),
   PRIMARY KEY("country_code")
 );
 
